@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: namespaces
+spec:
+  generators:
+  - clusters:
+      selector:
+        matchLabels:
+          dev: 'true'
+      values:
+        path: dev
+  - clusters:
+      selector:
+        matchLabels:
+          stage: 'true'
+      values:
+        path: stage
+  - clusters:
+      selector:
+        matchLabels:
+          prod: 'true'
+      values:
+        path: prod
+  template:
+    metadata:
+      name: 'namespaces-{{values.path}}-{{name}}'
+    spec:
+      destination:
+        namespace: default
+        server: '{{server}}'
+      source:
+        repoURL: https://github.com/nikita-akuity/demo-workflow-control.git
+        targetRevision: HEAD
+        path: 'clusters/namespaces/{{values.path}}'
+      project: namespaces
+      syncPolicy:
+        automated:
+          prune: false
+        syncOptions:
+          - CreateNamespace=true

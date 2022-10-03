@@ -1,0 +1,14 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: namespaces
+spec:
+  sourceRepos:
+    - https://github.com/nikita-akuity/demo-workflow-control.git
+  destinations:
+    - namespace: '*'
+      server: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: Namespace
