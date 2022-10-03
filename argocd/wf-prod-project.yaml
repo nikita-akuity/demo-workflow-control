@@ -5,7 +5,7 @@ metadata:
   name: wf-prod
 spec:
   sourceRepos:
-    - https://github.com/nikita-akuity/demo-workflow-delibery.git
+    - https://github.com/nikita-akuity/demo-workflow-delivery.git
   destinations:
     - namespace: '*-wf-prod'
       server: '*'
