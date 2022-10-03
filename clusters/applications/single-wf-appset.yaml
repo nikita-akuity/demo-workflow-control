@@ -32,7 +32,7 @@ spec:
       source:
         repoURL: https://github.com/nikita-akuity/demo-workflow-delivery.git
         targetRevision: 'env/{{values.env}}'
-        path: single-wf
+        path: single-workflow
       project: 'wf-{{values.env}}'
       # syncPolicy:
       #   automated:
