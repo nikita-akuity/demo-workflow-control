@@ -1,0 +1,14 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: wf-dev
+spec:
+  sourceRepos:
+    - https://github.com/nikita-akuity/demo-workflow-delibery.git
+  destinations:
+    - namespace: '*-wf-dev'
+      server: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
