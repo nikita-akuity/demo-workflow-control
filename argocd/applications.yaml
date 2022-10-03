@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: applications
+spec:
+  source:
+    repoURL: https://github.com/nikita-akuity/demo-workflow-control.git
+    targetRevision: HEAD
+    path: clusters/applications
+  destination:
+    name: in-cluster
+    namespace: argocd
+  project: default
+  syncPolicy:
+    automated: {}

@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: single-wf
+spec:
+  generators:
+  - clusters:
+      selector:
+        matchLabels:
+          dev: 'true'
+      values:
+        env: dev
+  - clusters:
+      selector:
+        matchLabels:
+          stage: 'true'
+      values:
+        env: stage
+  - clusters:
+      selector:
+        matchLabels:
+          prod: 'true'
+      values:
+        env: prod
+  template:
+    metadata:
+      name: 'single-wf-{{values.env}}-{{name}}'
+    spec:
+      destination:
+        namespace: 'single-wf-{{values.env}}'
+        server: '{{server}}'
+      source:
+        repoURL: https://github.com/nikita-akuity/demo-workflow-delivery.git
+        targetRevision: 'env/{{values.env}}'
+        path: single-wf
+      project: 'wf-{{values.env}}'
+      # syncPolicy:
+      #   automated:
+      #     prune: true
