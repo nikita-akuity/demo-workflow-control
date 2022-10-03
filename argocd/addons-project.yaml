@@ -13,4 +13,6 @@ spec:
       server: '*'
     - namespace: addons
       server: '*'
-
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
