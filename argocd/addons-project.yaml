@@ -9,6 +9,8 @@ spec:
   destinations:
     - namespace: argo-workflows
       server: '*'
+    - namespace: argo-events
+      server: '*'
     - namespace: external-secrets
       server: '*'
     - namespace: addons
