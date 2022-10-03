@@ -1,0 +1,9 @@
+server:
+  secure: false
+  ingress:
+    enabled: true
+    host: argo-workflows-demo.eks.akuity.local
+    annotations:
+      kubernetes.io/ingress.class: alb
+    tls:
+      enabled: false

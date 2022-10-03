@@ -1,0 +1,16 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: addons
+spec:
+  sourceRepos:
+    - https://github.com/nikita-akuity/demo-workflow-control.git
+  destinations:
+    - namespace: argo-workflows
+      server: '*'
+    - namespace: external-secrets
+      server: '*'
+    - namespace: addons
+      server: '*'
+

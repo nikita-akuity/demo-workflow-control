@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: addons
+spec:
+  generators:
+  - matrix:
+      generators:
+      - clusters:
+          selector:
+            matchLabels:
+              addons: 'enabled'
+      - git:
+          repoURL: https://github.com/nikita-akuity/demo-workflow-control.git
+          revision: HEAD
+          directories:
+          - path: clusters/addons/*
+  template:
+    metadata:
+      name: '{{path.basename}}-{{name}}'
+    spec:
+      destination:
+        namespace: '{{path.basename}}'
+        server: '{{server}}'
+      source:
+        repoURL: https://github.com/nikita-akuity/demo-workflow-control.git
+        targetRevision: HEAD
+        path: '{{path}}'
+      project: addons
+      syncPolicy:
+        automated:
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
