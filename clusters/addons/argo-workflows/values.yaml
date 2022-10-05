@@ -52,3 +52,19 @@ config:
       useSDKCreds: true
       encryptionOptions:
         enableEncryption: false
+
+  workflowDefaults: |
+    metadata:
+      labels:
+        workflows.argoproj.io/archive-strategy: always
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 8848
+      activeDeadlineSeconds: 7200
+      ttlStrategy:
+        secondsAfterSuccess: 600
+        secondsAfterFailure: 3600
+      podGC:
+        strategy: OnWorkflowSuccess
+      parallelism: 16
