@@ -2,7 +2,17 @@ global:
   image:
     tag: v3.4.1
 
+controller:
+  image:
+    repository: quay.io/argoproj/workflow-controller
+
+executor:
+  image:
+    repository: quay.io/argoproj/argoexec
+
 server:
+  image:
+    repository: quay.io/argoproj/argocli
   secure: true
   service:
     type: LoadBalancer
