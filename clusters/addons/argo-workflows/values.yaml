@@ -1,3 +1,7 @@
+global:
+  image:
+    tag: v3.4.1
+
 server:
   secure: true
   service:
