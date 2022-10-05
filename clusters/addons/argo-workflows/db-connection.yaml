@@ -1,0 +1,34 @@
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: aws-secret-store
+spec:
+  provider:
+    aws:
+      service: SecretsManager
+      region: us-west-1
+      auth:
+        jwt:
+          serviceAccountRef:
+            name: argo
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: argo-db-connect
+spec:
+  refreshInterval: 10m
+  secretStoreRef:
+    name: aws-secret-store
+    kind: SecretStore
+  target:
+    name: argo-mysql-config
+  data:
+  - secretKey: username
+    remoteRef:
+      key: arkose-demo/db/argo
+      property: user
+  - secretKey: password
+    remoteRef:
+      key: arkose-demo/db/argo
+      property: password

@@ -8,3 +8,9 @@ helmCharts:
   namespace: argo-workflows
   version: 1.2.0
   valuesFile: values.yaml
+
+resources:
+- db-connection.yaml
+
+patchesStrategicMerge:
+- sa-patch.yaml

@@ -4,3 +4,30 @@ server:
     type: LoadBalancer
   ingress:
     enabled: false
+
+config:
+  persistence: |
+    connectionPool:
+      maxIdleConns: 100
+      maxOpenConns: 0
+      connMaxLifetime: 0s # 0 means connections don't have a max lifetime
+    nodeStatusOffLoad: false
+    archive: true
+    archiveTTL: 180d
+    # skip database migration if needed.
+    # skipMigration: true
+    archiveLabelSelector:
+      matchLabels:
+        workflows.argoproj.io/archive-strategy: "always"
+    clusterName: argo-demo
+    mysql:
+      host: arkose-demo-db.ctit6l6icyvx.us-west-1.rds.amazonaws.com
+      port: 3306
+      database: argo_workflows_archive
+      tableName: argo_workflows
+      userNameSecret:
+        name: argo-mysql-config
+        key: username
+      passwordSecret:
+        name: argo-mysql-config
+        key: password
