@@ -14,3 +14,4 @@ resources:
 
 patchesStrategicMerge:
 - sa-patch.yaml
+- deployment-patch.yaml
