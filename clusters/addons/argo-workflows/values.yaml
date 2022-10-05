@@ -18,7 +18,7 @@ config:
     # skipMigration: true
     archiveLabelSelector:
       matchLabels:
-      - {key: workflows.argoproj.io/archive-strategy, operator: NotIn, values: [none]}
+        workflows.argoproj.io/archive-strategy: "always"
     clusterName: argo-demo
     mysql:
       host: arkose-demo-db.ctit6l6icyvx.us-west-1.rds.amazonaws.com
