@@ -1,6 +1,6 @@
 global:
   image:
-    tag: v3.4.1
+    tag: latest
 
 controller:
   image:
