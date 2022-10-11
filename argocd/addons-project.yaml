@@ -13,6 +13,8 @@ spec:
       server: '*'
     - namespace: external-secrets
       server: '*'
+    - namespace: cert-manager
+      server: '*'
     - namespace: addons
       server: '*'
   clusterResourceWhitelist:
