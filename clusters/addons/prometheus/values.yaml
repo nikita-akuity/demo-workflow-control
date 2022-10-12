@@ -23,3 +23,11 @@ nodeExporter:
 prometheusOperator:
   kubeletService:
     enabled: false
+  admissionWebhooks:
+    patch:
+      enabled: false
+    certManager:
+      enabled: true
+      issuerRef:
+        name: my-ca-issuer
+        kind: ClusterIssuer
