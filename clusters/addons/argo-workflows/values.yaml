@@ -20,57 +20,7 @@ server:
     enabled: false
 
 config:
-  persistence: |
-    connectionPool:
-      maxIdleConns: 100
-      maxOpenConns: 0
-      connMaxLifetime: 0s # 0 means connections don't have a max lifetime
-    nodeStatusOffLoad: false
-    archive: true
-    archiveTTL: 180d
-    # skip database migration if needed.
-    # skipMigration: true
-    archiveLabelSelector:
-      matchLabels:
-        workflows.argoproj.io/archive-strategy: "always"
-    clusterName: argo-demo
-    mysql:
-      host: arkose-demo-db.ctit6l6icyvx.us-west-1.rds.amazonaws.com
-      port: 3306
-      database: argo_workflows_archive
-      tableName: argo_workflows
-      userNameSecret:
-        name: argo-mysql-config
-        key: username
-      passwordSecret:
-        name: argo-mysql-config
-        key: password
-
-  artifactRepository: |
-    archiveLogs: true
-    s3:
-      endpoint: s3.amazonaws.com
-      bucket: akuity-arkose-demo
-      region: us-west-1
-      keyFormat: "artifacts\
-        /{{workflow.creationTimestamp.Y}}\
-        /{{workflow.creationTimestamp.m}}\
-        /{{workflow.creationTimestamp.d}}\
-        /{{workflow.name}}\
-        /{{pod.name}}"
-      # If this is set to true, argo workflows will use AWS SDK default credentials provider chain. This will allow things like
-      # IRSA and any of the authentication methods that the golang SDK uses in it's default chain.
-      # If you are using IRSA on AWS, and set this option to true, you will also need to modify Argo-Server Deployment with
-      # `spec.template.spec.securityContext.fsGroup: 65534` configuration. This is required for IRSA to be able to access
-      # `/var/run/secrets/eks.amazonaws.com/serviceaccount/token` file, and authenticate with AWS.
-      useSDKCreds: true
-      encryptionOptions:
-        enableEncryption: false
-
   workflowDefaults: |
-    metadata:
-      labels:
-        workflows.argoproj.io/archive-strategy: always
     spec:
       securityContext:
         runAsNonRoot: true
