@@ -18,6 +18,8 @@ spec:
   template:
     metadata:
       name: '{{path.basename}}-{{name}}'
+      annotations:
+        notifications.argoproj.io/subscribe.slack: test-nikita
     spec:
       destination:
         namespace: '{{path.basename}}'
