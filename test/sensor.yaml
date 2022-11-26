@@ -23,12 +23,15 @@ spec:
               spec:
                 serviceAccountName: operate-workflow-sa
                 entrypoint: start
+                arguments:
+                  parameters:
+                  - {name: payload, value: ""}
                 templates:
-                  name: start
+                - name: start
                   container:
                     image: argoproj/argosay:v1
                     command: [sh, -c]
-                    args: ["cowsay hello"]
+                    args: ["cowsay {{workflow.parameters.payload}}"]
           parameters:
           - src:
               dependencyName: wh-dep
