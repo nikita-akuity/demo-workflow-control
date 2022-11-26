@@ -21,6 +21,7 @@ spec:
               metadata:
                 generateName: test-
               spec:
+                serviceAccountName: operate-workflow-sa
                 entrypoint: start
                 templates:
                   name: start
