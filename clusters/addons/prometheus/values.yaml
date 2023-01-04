@@ -39,3 +39,6 @@ prometheus:
     serviceMonitorNamespaceSelector:
       matchLabels:
         monitored: "true"
+    podMonitorNamespaceSelector:
+      matchLabels:
+        monitored: "true"

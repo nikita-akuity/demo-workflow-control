@@ -1,11 +1,11 @@
 apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
+kind: PodMonitor
 metadata:
   labels:
     release: prod
   name: argo-wf-monitor
 spec:
-  endpoints:
+  podMetricsEndpoints:
     - path: /metrics
       port: metrics
   selector:

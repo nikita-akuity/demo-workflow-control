@@ -10,7 +10,7 @@ helmCharts:
   valuesFile: values.yaml
 
 resources:
-- servicemonitor.yaml
+- podmonitor.yaml
 
 patchesStrategicMerge:
 - deployment-patch.yaml
