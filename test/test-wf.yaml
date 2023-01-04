@@ -34,3 +34,6 @@ spec:
           value: '{{exitCode}}'
         name: runs_exit_status_counter
     name: run-test
+    retryStrategy:
+      limit: "5"
+      retryPolicy: OnTransientError
