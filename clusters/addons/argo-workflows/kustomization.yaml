@@ -6,7 +6,7 @@ helmCharts:
   repo: https://charts.akuity.io
   includeCRDs: true
   namespace: argo-workflows
-  version: 1.2.0
+  version: 1.2.1
   valuesFile: values.yaml
 
 resources:
