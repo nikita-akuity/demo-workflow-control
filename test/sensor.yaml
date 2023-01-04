@@ -25,13 +25,24 @@ spec:
                 entrypoint: start
                 arguments:
                   parameters:
-                  - {name: payload, value: ""}
+                  - {name: payload, value: "{}"}
                 templates:
                 - name: start
+                  steps:
+                  - - name: say
+                      template: cowsay
+                      arguments:
+                        parameters:
+                        - name: what
+                          value: "{{workflow.parameters.payload}}"
+                - name: cowsay
+                  inputs:
+                    parameters:
+                    - name: what
                   container:
                     image: argoproj/argosay:v1
                     command: [sh, -c]
-                    args: ["cowsay {{workflow.parameters.payload}}"]
+                    args: ["cowsay {{inputs.parameters.what}}"]
           parameters:
           - src:
               dependencyName: wh-dep

@@ -1,0 +1,201 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: test-runner
+  namespace: test
+spec:
+  activeDeadlineSeconds: 2400
+  arguments:
+    parameters:
+    - name: runId
+    - name: statusUrl
+      value: http://webhook-eventsource-svc.test.svc.cluster.local:12000/test
+  artifactGC:
+    strategy: Never
+  entrypoint: main
+  podGC:
+    strategy: OnWorkflowSuccess
+  serviceAccountName: operate-workflow-sa
+  templates:
+  - name: main
+    steps:
+    - - arguments:
+          parameters:
+          - name: status
+            value: started
+        continueOn:
+          error: true
+          failed: true
+        name: reportStarted
+        template: report-status
+      - continueOn:
+          error: true
+          failed: true
+        name: runTest
+        template: run-test
+    - - arguments:
+          parameters:
+          - name: exit_code
+            value: '{{steps.runTest.exitCode}}'
+        name: reportStatus
+        template: report-status
+  - activeDeadlineSeconds: 2100
+    archiveLocation:
+      archiveLogs: false
+    container:
+      args:
+      - cowsay $K8S_NAMESPACE && exit $(LANG=C tr -cd 0-9 </dev/urandom | head -c 1)
+      command:
+      - sh
+      - -c
+      env:
+      - name: K8S_NAMESPACE
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.namespace
+      - name: NODE_ENV
+        value: production
+      - name: QAWOLF_DOCKER_IMAGE
+        value: 'ghcr.io/qawolf/runner:'
+      - name: RUN_TIMEOUT
+        value: 30m
+      - name: WARMUP_ENABLED
+        value: "true"
+      image: argoproj/argosay:v1
+      name: runner
+      resources:
+        limits:
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 200Mi
+    inputs:
+      artifacts:
+      - name: run-data-file
+        path: /opt/runner/rundata/rundata.json
+        raw:
+          data: |
+            {"test":"qwe"}
+    metrics:
+      prometheus:
+      - counter:
+          value: "1"
+        help: Count of runs by exit code
+        labels:
+        - key: exit_code
+          value: '{{exitCode}}'
+        name: runs_exit_status_counter
+    name: run-test
+    retryStrategy:
+      limit: "5"
+      retryPolicy: OnTransientError
+  - inputs:
+      parameters:
+      - name: url
+        value: '{{workflow.parameters.statusUrl}}'
+      - name: token
+        value: '{{workflow.parameters.statusToken}}'
+      - name: runId
+        value: '{{workflow.parameters.runId}}'
+      - name: time
+        value: '{{= sprig.date("2006-01-02T15:04:05-0700", sprig.now()) }}'
+      - name: status
+        value: ""
+      - name: exit_code
+        value: ""
+      - name: message
+        value: ""
+    name: report-status
+    retryStrategy:
+      limit: "3"
+      retryPolicy: Always
+    script:
+      command:
+      - sh
+      image: curlimages/curl:7.85.0
+      resources:
+        limits:
+          memory: 100Mi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      source: |
+        status="{{inputs.parameters.status}}"
+        exit_code="{{inputs.parameters.exit_code}}"
+        message=""
+
+        if [ -z "${status}" ]; then
+          case $exit_code in
+            0)
+              status="passed"
+              ;;
+            1)
+              status="testRunFailed"
+              message="crash"
+              ;;
+            2)
+              status="downloadRunDataFailed"
+              message="failed to download run data"
+              ;;
+            3)
+              status="parseRunDataFailed"
+              message="run data was invalid JSON"
+              ;;
+            4)
+              status="testLintFailed"
+              message="lint failed"
+              ;;
+            5)
+              status="testRunFailed"
+              message="run failed"
+              ;;
+            6)
+              status="noRunData"
+              message="no run data was provided"
+              ;;
+            7)
+              status="testRunFailed"
+              message="no recorder script found in the runner image"
+              ;;
+            9)
+              status="noRunData"
+              message="failed to read local run data file"
+              ;;
+            10)
+              status="parseRunDataFailed"
+              message="run env was invalid JSON"
+              ;;
+            11)
+              status="testRunFailed"
+              message="before hook failed"
+              ;;
+            12)
+              status="testRunFailed"
+              message="failed to set ENV into process.env"
+              ;;
+            13)
+              status="testRunTimedOut"
+              message="run timed out"
+              ;;
+            *)
+              status="testRunFailed"
+              message="crash"
+              ;;
+          esac
+        fi
+
+        curl \
+          -X POST \
+          -H \
+          "Content-Type: application/json" \
+          -d \
+          "{ \"message\": \"$message\", \"name\": \"$status\", \"run_id\": \"{{inputs.parameters.runId}}\", \"time\": \"{{inputs.parameters.time}}\" }" \
+          "{{inputs.parameters.url}}"
+  ttlStrategy:
+    secondsAfterCompletion: 172800
+    secondsAfterFailure: 172800
+    secondsAfterSuccess: 172800
+  workflowMetadata:
+    labels:
+      qawolf.app/scheduler: argo
+      workflows.argoproj.io/archive-strategy: always
