@@ -35,3 +35,7 @@ prometheus:
   enabled: true
   service:
     type: LoadBalancer
+  prometheusSpec:
+    serviceMonitorNamespaceSelector:
+      matchLabels:
+        monitored: "true"

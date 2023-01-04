@@ -30,6 +30,9 @@ spec:
         path: '{{path}}'
       project: addons
       syncPolicy:
+        managedNamespaceMetadata:
+          labels:
+            monitored: "true"
         automated:
           prune: true
         syncOptions:
