@@ -31,3 +31,7 @@ prometheusOperator:
       issuerRef:
         name: my-ca-issuer
         kind: ClusterIssuer
+prometheus:
+  enabled: true
+  service:
+    type: LoadBalancer
