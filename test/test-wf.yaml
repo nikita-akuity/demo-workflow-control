@@ -18,9 +18,9 @@ spec:
         template: run-test
   - container:
       name: runner
-      image: argoproj/argosay:v1
+      image: alpine
       args:
-      - cowsay qwe && exit 0
+      - exit 1
       command:
       - sh
       - -c
@@ -35,5 +35,4 @@ spec:
         name: runs_exit_status_counter
     name: run-test
     retryStrategy:
-      limit: "5"
-      retryPolicy: OnTransientError
+      limit: "1"
