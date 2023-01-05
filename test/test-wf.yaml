@@ -20,7 +20,7 @@ spec:
       name: runner
       image: argoproj/argosay:v1
       args:
-      - cowsay qwe && exit 1
+      - cowsay qwe && exit 0
       command:
       - sh
       - -c
@@ -31,7 +31,7 @@ spec:
         help: Count of runs by exit code
         labels:
         - key: exit_code
-          value: '{{lastRetry.exitCode}}'
+          value: '{{exitCode}}'
         name: runs_exit_status_counter
     name: run-test
     retryStrategy:
