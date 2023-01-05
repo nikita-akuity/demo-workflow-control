@@ -31,7 +31,7 @@ spec:
         help: Count of runs by exit code
         labels:
         - key: exit_code
-          value: '{{exitCode}}'
+          value: '{{lastRetry.exitCode}}'
         name: runs_exit_status_counter
     name: run-test
     retryStrategy:
