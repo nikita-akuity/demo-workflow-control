@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: run-system-staging
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - chartRev: master
+            name: staging
+  template:
+    metadata:
+      name: run-system-{{name}}
+      namespace: argocd
+    spec:
+      project: default
+      destination:
+        server: http://cluster-laptop:8001
+        namespace: run-system
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - PruneLast=true
+      sources:
+        - repoURL: https://github.com/nikita-akuity/demo-workflow-control
+          targetRevision: test
+          ref: deployStagingRepo
+        - repoURL: https://github.com/argoproj/argocd-example-apps
+          path: helm-guestbook
+          targetRevision: '{{chartRev}}'
+          helm:
+            valueFiles:
+              - $deployStagingRepo/helm-values/{{name}}.yaml
