@@ -1,0 +1,23 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: multi-source
+spec:
+  project: default
+  destination:
+    namespace: test-ms
+    name: laptop
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+    - repoURL: 'https://github.com/nikita-akuity/demo-workflow-control'
+      targetRevision: test
+      ref: deployStagingRepo
+    - repoURL: 'https://github.com/argoproj/argocd-example-apps'
+      path: helm-guestbook
+      targetRevision: master
+      helm:
+        valueFiles:
+          - $deployStagingRepo/helm-values/staging.yaml
