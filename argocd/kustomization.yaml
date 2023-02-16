@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- addons-appset.yaml
+- addons-project.yaml
+- applications.yaml
+- multi-source-app.yaml
+- namespaces-appset.yaml
+- namespaces-project.yaml
+- wf-dev-project.yaml
+- wf-prod-project.yaml
+- wf-stage-project.yaml
