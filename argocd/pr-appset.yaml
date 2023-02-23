@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: pr-test
+spec:
+  generators:
+  - pullRequest:
+      github:
+        owner: nikita-akuity
+        repo: private-repo-pr-test
+        appSecretName: argocd-secret
+  template:
+    metadata:
+      name: 'test-pr-{{number}}'
+    spec:
+      destination:
+        namespace: 'test-pr'
+        name: 'test-clutster'
+      source:
+        repoURL: https://github.com/nikita-akuity/demo-workflow-control.git
+        targetRevision: HEAD
+        path: base
+      project: addons
+      syncPolicy:
+        automated:
+          prune: true
+        syncOptions:
+          - CreateNamespace=true

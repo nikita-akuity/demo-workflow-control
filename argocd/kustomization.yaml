@@ -10,3 +10,4 @@ resources:
 - wf-dev-project.yaml
 - wf-prod-project.yaml
 - wf-stage-project.yaml
+- pr-appset.yaml
